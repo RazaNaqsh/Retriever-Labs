@@ -611,7 +611,7 @@ export function ChunkVisualizer({ chunks, setChunks, onNext, theme }: ChunkVisua
               )}
             </div>
 
-            <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2">
+            <div className="space-y-3 max-h-[520px] overflow-y-auto pr-2">
               {chunks.length === 0 ? (
                 <div className={`text-center py-12 ${isNeon ? 'text-[#6060a0]' : 'text-gray-400'}`}>
                   <Scissors className="size-12 mx-auto mb-3 opacity-50" />
