@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { ArrowRight, ArrowLeft, Search, Activity } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Search, Activity, Box, Maximize2 } from 'lucide-react';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Badge } from './ui/badge';
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
+import { Embedding3DView } from './embedding-3d-view';
 import type { Chunk } from '../App';
 import type { Theme } from '../App';
 
@@ -18,6 +19,8 @@ type SimilarityVisualizerProps = {
   theme: Theme;
 };
 
+type ViewMode = '2d' | '3d';
+
 function cosineSimilarity(a: number[], b: number[]): number {
   const dotProduct = a.reduce((sum, val, i) => sum + val * b[i], 0);
   const magnitudeA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0));
@@ -28,6 +31,7 @@ function cosineSimilarity(a: number[], b: number[]): number {
 export function SimilarityVisualizer({ chunks, queryEmbedding, setQueryEmbedding, onNext, onBack, theme }: SimilarityVisualizerProps) {
   const [queryText, setQueryText] = useState('');
   const [similarities, setSimilarities] = useState<{ chunkId: string; similarity: number; text: string }[]>([]);
+  const [viewMode, setViewMode] = useState<ViewMode>('2d');
   
   const isNeon = theme === 'neon';
 
@@ -93,29 +97,93 @@ export function SimilarityVisualizer({ chunks, queryEmbedding, setQueryEmbedding
 
         <TabsContent value="embeddings" className="mt-6">
           <Card className={`p-6 ${isNeon ? 'bg-[#141420]/80 backdrop-blur-sm border-2 border-[#8b5cf6]/20 shadow-[0_0_20px_rgba(139,92,246,0.1)]' : 'bg-white/80 backdrop-blur-sm border-2 border-indigo-100'}`}>
-            <div className="mb-4">
-              <h3 className={`mb-2 ${isNeon ? 'text-[#8b5cf6]' : 'text-indigo-700'}`}>Embedding Visualization</h3>
-              <p className={`text-sm ${isNeon ? 'text-[#9090aa]' : 'text-gray-600'}`}>
-                Each chunk is represented as a point in embedding space. Closer points have similar semantic meaning.
-              </p>
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className={`mb-2 ${isNeon ? 'text-[#8b5cf6]' : 'text-indigo-700'}`}>Embedding Visualization</h3>
+                <p className={`text-sm ${isNeon ? 'text-[#9090aa]' : 'text-gray-600'}`}>
+                  Each chunk is represented as a point in embedding space. Closer points have similar semantic meaning.
+                </p>
+              </div>
+              
+              {/* View Mode Toggle */}
+              <div className={`flex gap-2 p-1 rounded-lg ${isNeon ? 'bg-[#1a1a2e] border border-[#8b5cf6]/30' : 'bg-gray-100'}`}>
+                <button
+                  onClick={() => setViewMode('2d')}
+                  className={`
+                    px-3 py-2 rounded-md transition-all flex items-center gap-2
+                    ${viewMode === '2d'
+                      ? isNeon
+                        ? 'bg-[#8b5cf6]/20 text-[#8b5cf6] shadow-[0_0_10px_rgba(139,92,246,0.3)]'
+                        : 'bg-indigo-600 text-white'
+                      : isNeon
+                      ? 'text-[#9090aa] hover:text-[#e0e0ff]'
+                      : 'text-gray-600 hover:text-gray-900'
+                    }
+                  `}
+                >
+                  <Maximize2 className="size-4" />
+                  2D
+                </button>
+                <button
+                  onClick={() => setViewMode('3d')}
+                  className={`
+                    px-3 py-2 rounded-md transition-all flex items-center gap-2
+                    ${viewMode === '3d'
+                      ? isNeon
+                        ? 'bg-[#8b5cf6]/20 text-[#8b5cf6] shadow-[0_0_10px_rgba(139,92,246,0.3)]'
+                        : 'bg-indigo-600 text-white'
+                      : isNeon
+                      ? 'text-[#9090aa] hover:text-[#e0e0ff]'
+                      : 'text-gray-600 hover:text-gray-900'
+                    }
+                  `}
+                >
+                  <Box className="size-4" />
+                  3D
+                </button>
+              </div>
             </div>
 
             <div className={`rounded-lg p-4 ${isNeon ? 'bg-gradient-to-br from-[#1a1a2e] to-[#0a0a0f] border border-[#8b5cf6]/20' : 'bg-gradient-to-br from-indigo-50 to-purple-50'}`}>
-              <ResponsiveContainer width="100%" height={400}>
-                <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={isNeon ? '#2a2a40' : '#e0e7ff'} />
-                  <XAxis type="number" dataKey="x" name="Dimension 1" stroke={isNeon ? '#8b5cf6' : '#6366f1'} />
-                  <YAxis type="number" dataKey="y" name="Dimension 2" stroke={isNeon ? '#8b5cf6' : '#6366f1'} />
-                  <Tooltip 
-                    cursor={{ strokeDasharray: '3 3' }}
-                    contentStyle={{ background: isNeon ? '#1a1a2e' : 'white', border: isNeon ? '2px solid #8b5cf6' : '2px solid #e0e7ff', borderRadius: '8px', color: isNeon ? '#e0e0ff' : '#000' }}
-                  />
-                  <Scatter data={chunkEmbeddings} fill={isNeon ? '#8b5cf6' : '#6366f1'} name="Chunks" />
-                  {queryData.length > 0 && (
-                    <Scatter data={queryData} fill={isNeon ? '#ff00ff' : '#ec4899'} name="Query" />
-                  )}
-                </ScatterChart>
-              </ResponsiveContainer>
+              {viewMode === '2d' ? (
+                <ResponsiveContainer width="100%" height={400}>
+                  <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={isNeon ? '#2a2a40' : '#e0e7ff'} />
+                    <XAxis type="number" dataKey="x" name="Dimension 1" stroke={isNeon ? '#8b5cf6' : '#6366f1'} />
+                    <YAxis type="number" dataKey="y" name="Dimension 2" stroke={isNeon ? '#8b5cf6' : '#6366f1'} />
+                    <Tooltip 
+                      cursor={{ strokeDasharray: '3 3' }}
+                      content={({ active, payload }) => {
+                        if (active && payload && payload.length) {
+                          const data = payload[0].payload;
+                          const chunk = chunks.find(c => c.id === data.id);
+                          return (
+                            <div className={`p-3 rounded-lg shadow-lg max-w-xs ${
+                              isNeon 
+                                ? 'bg-[#1a1a2e] border-2 border-[#8b5cf6] text-[#e0e0ff]' 
+                                : 'bg-white border-2 border-indigo-200 text-gray-900'
+                            }`}>
+                              <div className={`mb-1 ${isNeon ? 'text-[#8b5cf6]' : 'text-indigo-700'}`}>
+                                {data.name}
+                              </div>
+                              <div className={`text-sm ${isNeon ? 'text-[#c0c0ff]' : 'text-gray-700'}`}>
+                                {chunk ? `${chunk.text.substring(0, 120)}${chunk.text.length > 120 ? '...' : ''}` : data.name}
+                              </div>
+                            </div>
+                          );
+                        }
+                        return null;
+                      }}
+                    />
+                    <Scatter data={chunkEmbeddings} fill={isNeon ? '#8b5cf6' : '#6366f1'} name="Chunks" />
+                    {queryData.length > 0 && (
+                      <Scatter data={queryData} fill={isNeon ? '#ff00ff' : '#ec4899'} name="Query" />
+                    )}
+                  </ScatterChart>
+                </ResponsiveContainer>
+              ) : (
+                <Embedding3DView chunks={chunks} queryEmbedding={queryEmbedding} theme={theme} />
+              )}
             </div>
 
             <div className="mt-4 flex gap-4 text-sm">

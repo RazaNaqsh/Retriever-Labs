@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FileText, Scissors, Upload, ArrowRight, Loader2 } from 'lucide-react';
+import { FileText, Scissors, Upload, ArrowRight, Loader2, Info } from 'lucide-react';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
@@ -12,6 +12,31 @@ type ChunkVisualizerProps = {
   setChunks: (chunks: Chunk[]) => void;
   onNext: () => void;
   theme: Theme;
+};
+
+export type ChunkingStrategy = 'fixed-size' | 'sentence' | 'paragraph' | 'sliding-window' | 'semantic';
+
+const CHUNKING_STRATEGIES = {
+  'fixed-size': {
+    name: 'Fixed Size',
+    description: 'Splits text into chunks of a fixed character length. Simple and predictable, but may break mid-sentence.',
+  },
+  'sentence': {
+    name: 'Sentence-Based',
+    description: 'Groups complete sentences together until reaching the size limit. Maintains sentence boundaries for better context.',
+  },
+  'paragraph': {
+    name: 'Paragraph-Based',
+    description: 'Splits text by paragraphs, keeping complete ideas together. Best for well-structured documents.',
+  },
+  'sliding-window': {
+    name: 'Sliding Window',
+    description: 'Creates overlapping chunks using a sliding window approach. Ensures context continuity between chunks.',
+  },
+  'semantic': {
+    name: 'Semantic Chunking',
+    description: 'Groups text by semantic similarity. Keeps related content together regardless of length (simulated).',
+  },
 };
 
 // Mock function to generate embeddings
@@ -84,10 +109,241 @@ function chunkText(text: string, chunkSize: number = 200, overlapSize: number = 
   return chunks;
 }
 
+// Function to chunk text by strategy
+function chunkTextByStrategy(text: string, strategy: ChunkingStrategy, chunkSize: number = 200): Chunk[] {
+  let chunks: Chunk[] = [];
+  
+  switch (strategy) {
+    case 'fixed-size':
+      chunks = chunkFixedSize(text, chunkSize);
+      break;
+    case 'sentence':
+      chunks = chunkBySentence(text, chunkSize);
+      break;
+    case 'paragraph':
+      chunks = chunkByParagraph(text, chunkSize);
+      break;
+    case 'sliding-window':
+      chunks = chunkSlidingWindow(text, chunkSize, Math.floor(chunkSize * 0.3));
+      break;
+    case 'semantic':
+      chunks = chunkSemantic(text, chunkSize);
+      break;
+    default:
+      chunks = chunkBySentence(text, chunkSize);
+  }
+  
+  return chunks;
+}
+
+// Fixed-size chunking
+function chunkFixedSize(text: string, chunkSize: number): Chunk[] {
+  const chunks: Chunk[] = [];
+  let chunkId = 0;
+  
+  for (let i = 0; i < text.length; i += chunkSize) {
+    const chunkText = text.slice(i, i + chunkSize).trim();
+    if (chunkText) {
+      chunks.push({
+        id: `chunk-${chunkId++}`,
+        text: chunkText,
+        embedding: generateMockEmbedding(),
+      });
+    }
+  }
+  
+  return chunks;
+}
+
+// Sentence-based chunking
+function chunkBySentence(text: string, chunkSize: number): Chunk[] {
+  const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+  const chunks: Chunk[] = [];
+  let currentChunk = '';
+  let chunkId = 0;
+  let previousChunkText = '';
+
+  sentences.forEach((sentence) => {
+    if ((currentChunk + sentence).length > chunkSize && currentChunk.length > 0) {
+      const chunkText = currentChunk.trim();
+      const overlap = previousChunkText ? findOverlap(previousChunkText, chunkText) : null;
+      
+      chunks.push({
+        id: `chunk-${chunkId++}`,
+        text: chunkText,
+        embedding: generateMockEmbedding(),
+        overlapStart: overlap?.start,
+        overlapEnd: overlap?.end,
+      });
+      
+      previousChunkText = chunkText;
+      currentChunk = sentence;
+    } else {
+      currentChunk += sentence;
+    }
+  });
+
+  if (currentChunk.trim()) {
+    const chunkText = currentChunk.trim();
+    const overlap = previousChunkText ? findOverlap(previousChunkText, chunkText) : null;
+    
+    chunks.push({
+      id: `chunk-${chunkId}`,
+      text: chunkText,
+      embedding: generateMockEmbedding(),
+      overlapStart: overlap?.start,
+      overlapEnd: overlap?.end,
+    });
+  }
+
+  return chunks;
+}
+
+// Paragraph-based chunking
+function chunkByParagraph(text: string, chunkSize: number): Chunk[] {
+  const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim());
+  const chunks: Chunk[] = [];
+  let currentChunk = '';
+  let chunkId = 0;
+  let previousChunkText = '';
+
+  paragraphs.forEach((paragraph) => {
+    if ((currentChunk + paragraph).length > chunkSize && currentChunk.length > 0) {
+      const chunkText = currentChunk.trim();
+      const overlap = previousChunkText ? findOverlap(previousChunkText, chunkText) : null;
+      
+      chunks.push({
+        id: `chunk-${chunkId++}`,
+        text: chunkText,
+        embedding: generateMockEmbedding(),
+        overlapStart: overlap?.start,
+        overlapEnd: overlap?.end,
+      });
+      
+      previousChunkText = chunkText;
+      currentChunk = paragraph;
+    } else {
+      currentChunk += (currentChunk ? '\n\n' : '') + paragraph;
+    }
+  });
+
+  if (currentChunk.trim()) {
+    const chunkText = currentChunk.trim();
+    const overlap = previousChunkText ? findOverlap(previousChunkText, chunkText) : null;
+    
+    chunks.push({
+      id: `chunk-${chunkId}`,
+      text: chunkText,
+      embedding: generateMockEmbedding(),
+      overlapStart: overlap?.start,
+      overlapEnd: overlap?.end,
+    });
+  }
+
+  // If no paragraphs found, fall back to sentence-based
+  if (chunks.length === 0) {
+    return chunkBySentence(text, chunkSize);
+  }
+
+  return chunks;
+}
+
+// Sliding window chunking
+function chunkSlidingWindow(text: string, chunkSize: number, overlapSize: number): Chunk[] {
+  const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+  const chunks: Chunk[] = [];
+  let currentChunk = '';
+  let chunkId = 0;
+  let previousChunkText = '';
+
+  sentences.forEach((sentence) => {
+    if ((currentChunk + sentence).length > chunkSize && currentChunk.length > 0) {
+      const chunkText = currentChunk.trim();
+      const overlap = previousChunkText ? findOverlap(previousChunkText, chunkText) : null;
+      
+      chunks.push({
+        id: `chunk-${chunkId++}`,
+        text: chunkText,
+        embedding: generateMockEmbedding(),
+        overlapStart: overlap?.start,
+        overlapEnd: overlap?.end,
+      });
+      
+      // Create overlap for next chunk
+      const words = currentChunk.trim().split(' ');
+      const overlapWords = Math.min(Math.floor(overlapSize / 5), Math.floor(words.length / 2));
+      previousChunkText = chunkText;
+      currentChunk = words.slice(-overlapWords).join(' ') + ' ' + sentence;
+    } else {
+      currentChunk += sentence;
+    }
+  });
+
+  if (currentChunk.trim()) {
+    const chunkText = currentChunk.trim();
+    const overlap = previousChunkText ? findOverlap(previousChunkText, chunkText) : null;
+    
+    chunks.push({
+      id: `chunk-${chunkId}`,
+      text: chunkText,
+      embedding: generateMockEmbedding(),
+      overlapStart: overlap?.start,
+      overlapEnd: overlap?.end,
+    });
+  }
+
+  return chunks;
+}
+
+// Semantic chunking (simulated)
+function chunkSemantic(text: string, chunkSize: number): Chunk[] {
+  // Simulate semantic chunking by grouping sentences with similar topics
+  // In reality, this would use embeddings to group semantically similar content
+  const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+  const chunks: Chunk[] = [];
+  let currentChunk = '';
+  let chunkId = 0;
+  let previousChunkText = '';
+
+  // Simple simulation: group every 2-4 sentences together
+  let sentencesInChunk = 0;
+  const targetSentences = Math.floor(Math.random() * 3) + 2;
+
+  sentences.forEach((sentence, index) => {
+    currentChunk += sentence;
+    sentencesInChunk++;
+    
+    const shouldCreateChunk = 
+      currentChunk.length > chunkSize || 
+      sentencesInChunk >= targetSentences ||
+      index === sentences.length - 1;
+
+    if (shouldCreateChunk && currentChunk.trim()) {
+      const chunkText = currentChunk.trim();
+      const overlap = previousChunkText ? findOverlap(previousChunkText, chunkText) : null;
+      
+      chunks.push({
+        id: `chunk-${chunkId++}`,
+        text: chunkText,
+        embedding: generateMockEmbedding(),
+        overlapStart: overlap?.start,
+        overlapEnd: overlap?.end,
+      });
+      
+      previousChunkText = chunkText;
+      currentChunk = '';
+      sentencesInChunk = 0;
+    }
+  });
+
+  return chunks;
+}
+
 export function ChunkVisualizer({ chunks, setChunks, onNext, theme }: ChunkVisualizerProps) {
   const [inputText, setInputText] = useState('');
   const [isDragging, setIsDragging] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [chunkingStrategy, setChunkingStrategy] = useState<ChunkingStrategy>('sentence');
   
   const isNeon = theme === 'neon';
 
@@ -96,7 +352,7 @@ export function ChunkVisualizer({ chunks, setChunks, onNext, theme }: ChunkVisua
       setIsProcessing(true);
       // Simulate processing time
       setTimeout(() => {
-        const newChunks = chunkText(inputText);
+        const newChunks = chunkTextByStrategy(inputText, chunkingStrategy);
         setChunks(newChunks);
         setIsProcessing(false);
       }, 800);
@@ -110,7 +366,7 @@ export function ChunkVisualizer({ chunks, setChunks, onNext, theme }: ChunkVisua
       // Simulate processing time for file upload
       setTimeout(() => {
         const text = e.target?.result as string;
-        const newChunks = chunkText(text);
+        const newChunks = chunkTextByStrategy(text, chunkingStrategy);
         setChunks(newChunks);
         setInputText(text);
         setIsProcessing(false);
@@ -178,6 +434,54 @@ export function ChunkVisualizer({ chunks, setChunks, onNext, theme }: ChunkVisua
             Upload a document or paste text to split it into manageable chunks
           </p>
         </div>
+
+        {/* Chunking Strategy Selector */}
+        <Card className={`p-6 ${
+          isNeon 
+            ? 'bg-[#141420]/80 backdrop-blur-sm border-2 border-[#ff00ff]/20 shadow-[0_0_20px_rgba(255,0,255,0.1)]' 
+            : 'bg-white/80 backdrop-blur-sm border-2 border-purple-100'
+        }`}>
+          <div className="flex items-center gap-2 mb-4">
+            <Scissors className={`size-5 ${isNeon ? 'text-[#ff00ff]' : 'text-purple-600'}`} />
+            <h3 className={isNeon ? 'text-[#ff00ff]' : 'text-purple-700'}>Chunking Strategy</h3>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
+            {Object.entries(CHUNKING_STRATEGIES).map(([key, strategy]) => (
+              <button
+                key={key}
+                onClick={() => setChunkingStrategy(key as ChunkingStrategy)}
+                className={`
+                  p-4 rounded-lg border-2 transition-all text-left
+                  ${chunkingStrategy === key
+                    ? isNeon
+                      ? 'border-[#ff00ff] bg-[#ff00ff]/10 shadow-[0_0_15px_rgba(255,0,255,0.3)]'
+                      : 'border-purple-500 bg-purple-50 shadow-md'
+                    : isNeon
+                    ? 'border-[#2a2a40] bg-[#1a1a2e]/50 hover:border-[#ff00ff]/50'
+                    : 'border-gray-200 bg-white hover:border-purple-300'
+                  }
+                `}
+              >
+                <div className="flex items-start gap-2 mb-2">
+                  <div className={`mt-0.5 ${chunkingStrategy === key ? (isNeon ? 'text-[#ff00ff]' : 'text-purple-600') : (isNeon ? 'text-[#6060a0]' : 'text-gray-400')}`}>
+                    {chunkingStrategy === key ? (
+                      <div className="size-2 rounded-full bg-current" />
+                    ) : (
+                      <div className="size-2 rounded-full border-2 border-current" />
+                    )}
+                  </div>
+                  <h4 className={`text-sm ${chunkingStrategy === key ? (isNeon ? 'text-[#ff00ff]' : 'text-purple-700') : (isNeon ? 'text-[#e0e0ff]' : 'text-gray-900')}`}>
+                    {strategy.name}
+                  </h4>
+                </div>
+                <p className={`text-xs leading-relaxed ${isNeon ? 'text-[#9090aa]' : 'text-gray-600'}`}>
+                  {strategy.description}
+                </p>
+              </button>
+            ))}
+          </div>
+        </Card>
 
         <div className="grid md:grid-cols-2 gap-8">
           {/* Input Section */}
