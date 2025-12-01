@@ -67,7 +67,7 @@ export function HeroSection({ theme, setTheme }: HeroSectionProps) {
             <span className={isNeon ? 'text-[#00f0ff]' : 'text-white/90'}>Interactive RAG Visualization</span>
           </div>
           
-          <h1 className={`mb-6 ${
+          <h1 className={`mb-6 text-5xl ${
             isNeon 
               ? 'text-transparent bg-clip-text bg-linear-to-r from-[#00f0ff] via-[#8b5cf6] to-[#ff00ff] drop-shadow-[0_0_30px_rgba(0,240,255,0.5)]' 
               : 'text-white'
