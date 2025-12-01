@@ -11,12 +11,12 @@ export function HeroSection({ theme, setTheme }: HeroSectionProps) {
   const isNeon = theme === 'neon';
 
   return (
-    <div className={`relative overflow-hidden ${isNeon ? 'bg-gradient-to-br from-[#0a0a0f] via-[#1a0a2e] to-[#0a0a0f] border-b border-[#00f0ff]/20' : 'bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600'} py-24`}>
+    <div className={`relative overflow-hidden ${isNeon ? 'bg-linear-to-br from-[#0a0a0f] via-[#1a0a2e] to-[#0a0a0f] border-b border-[#00f0ff]/20' : 'bg-linear-to-r from-indigo-600 via-purple-600 to-blue-600'} py-24`}>
       {/* Backgrounds */}
       {isNeon ? (
         <>
           {/* Animated grid background */}
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(0,240,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,240,255,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(0,240,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,240,255,0.03)_1px,transparent_1px)] bg-size-[50px_50px]" />
           
           {/* Neon glow orbs */}
           <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#00f0ff]/10 rounded-full blur-[120px] animate-pulse" />
@@ -25,7 +25,7 @@ export function HeroSection({ theme, setTheme }: HeroSectionProps) {
         </>
       ) : (
         <>
-          <div className="absolute inset-0 bg-grid-white/[0.05] bg-[size:32px_32px]" />
+          <div className="absolute inset-0 bg-grid-white/[0.05] bg-size-[32px_32px]" />
           <div className="absolute top-0 right-0 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl" />
           <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl" />
         </>
@@ -38,7 +38,7 @@ export function HeroSection({ theme, setTheme }: HeroSectionProps) {
             onClick={() => setTheme(isNeon ? 'light' : 'neon')}
             className={`${
               isNeon 
-                ? 'bg-gradient-to-r from-[#00f0ff]/20 to-[#8b5cf6]/20 border border-[#00f0ff]/30 text-[#00f0ff] hover:bg-[#00f0ff]/30' 
+                ? 'bg-linear-to-r from-[#00f0ff]/20 to-[#8b5cf6]/20 border border-[#00f0ff]/30 text-[#00f0ff] hover:bg-[#00f0ff]/30' 
                 : 'bg-white/20 border border-white/30 text-white hover:bg-white/30'
             } backdrop-blur-sm`}
             variant="outline"
@@ -60,7 +60,7 @@ export function HeroSection({ theme, setTheme }: HeroSectionProps) {
         <div className="text-center">
           <div className={`inline-flex items-center gap-2 px-5 py-2 rounded-full ${
             isNeon 
-              ? 'bg-gradient-to-r from-[#00f0ff]/10 to-[#8b5cf6]/10 backdrop-blur-sm border border-[#00f0ff]/30 shadow-[0_0_20px_rgba(0,240,255,0.3)]' 
+              ? 'bg-linear-to-r from-[#00f0ff]/10 to-[#8b5cf6]/10 backdrop-blur-sm border border-[#00f0ff]/30 shadow-[0_0_20px_rgba(0,240,255,0.3)]' 
               : 'bg-white/10 backdrop-blur-sm border border-white/20'
           } mb-8`}>
             <Sparkles className={`size-4 ${isNeon ? 'text-[#00f0ff] animate-pulse' : 'text-yellow-300'}`} />
@@ -69,7 +69,7 @@ export function HeroSection({ theme, setTheme }: HeroSectionProps) {
           
           <h1 className={`mb-6 ${
             isNeon 
-              ? 'text-transparent bg-clip-text bg-gradient-to-r from-[#00f0ff] via-[#8b5cf6] to-[#ff00ff] drop-shadow-[0_0_30px_rgba(0,240,255,0.5)]' 
+              ? 'text-transparent bg-clip-text bg-linear-to-r from-[#00f0ff] via-[#8b5cf6] to-[#ff00ff] drop-shadow-[0_0_30px_rgba(0,240,255,0.5)]' 
               : 'text-white'
           }`}>
             Retriever Labs

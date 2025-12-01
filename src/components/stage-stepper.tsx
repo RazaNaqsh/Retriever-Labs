@@ -81,9 +81,9 @@ export function StageStepper({ stages, currentStage, onStageChange, theme }: Sta
                       relative size-16 rounded-full flex items-center justify-center
                       transition-all duration-500 border-2
                       ${isActive 
-                        ? 'bg-gradient-to-br scale-110' 
+                        ? 'bg-linear-to-br scale-110' 
                         : isCompleted
-                        ? 'bg-gradient-to-br'
+                        ? 'bg-linear-to-br'
                         : isNeon 
                         ? 'bg-[#1a1a2e] border-[#2a2a40]'
                         : 'bg-white border-gray-200'
@@ -151,7 +151,7 @@ export function StageStepper({ stages, currentStage, onStageChange, theme }: Sta
               
               {/* Connector line */}
               {index < stages.length - 1 && (
-                <div className="absolute top-8 left-[calc(50%+2rem)] right-0 h-0.5 -z-0">
+                <div className="absolute top-8 left-[calc(50%+2rem)] right-0 h-0.5 z-0">
                   {/* Background line */}
                   <div className={`h-full relative overflow-hidden ${isNeon ? 'bg-[#2a2a40]' : 'bg-gray-200'}`}>
                     {/* Animated progress line */}

@@ -106,7 +106,7 @@ export function RetrievalVisualizer({ chunks, onBack, theme }: RetrievalVisualiz
 
             <Button 
               onClick={handleSubmit} 
-              className={`w-full ${isNeon ? 'bg-gradient-to-r from-[#00f0ff] to-[#00c0ff] hover:from-[#00c0ff] hover:to-[#00f0ff] text-black shadow-[0_0_20px_rgba(0,240,255,0.3)]' : 'bg-indigo-600 hover:bg-indigo-700'}`}
+              className={`w-full ${isNeon ? 'bg-linear-to-r from-[#00f0ff] to-[#00c0ff] hover:from-[#00c0ff] hover:to-[#00f0ff] text-black shadow-[0_0_20px_rgba(0,240,255,0.3)]' : 'bg-indigo-600 hover:bg-indigo-700'}`}
               disabled={isGenerating || !query.trim()}
             >
               {isGenerating ? (
@@ -149,7 +149,7 @@ export function RetrievalVisualizer({ chunks, onBack, theme }: RetrievalVisualiz
         </Card>
 
         {/* Info Panel */}
-        <Card className={`p-6 ${isNeon ? 'bg-gradient-to-br from-[#8b5cf6]/10 to-[#00f0ff]/10 border-2 border-[#8b5cf6]/30 shadow-[0_0_20px_rgba(139,92,246,0.1)]' : 'bg-gradient-to-br from-purple-50 to-indigo-50 border-2 border-purple-100'}`}>
+        <Card className={`p-6 ${isNeon ? 'bg-linear-to-br from-[#8b5cf6]/10 to-[#00f0ff]/10 border-2 border-[#8b5cf6]/30 shadow-[0_0_20px_rgba(139,92,246,0.1)]' : 'bg-linear-to-br from-purple-50 to-indigo-50 border-2 border-purple-100'}`}>
           <div className="flex items-center gap-2 mb-4">
             <Sparkles className={`size-5 ${isNeon ? 'text-[#8b5cf6]' : 'text-purple-600'}`} />
             <h3 className={isNeon ? 'text-[#8b5cf6]' : 'text-purple-700'}>How It Works</h3>
@@ -157,19 +157,19 @@ export function RetrievalVisualizer({ chunks, onBack, theme }: RetrievalVisualiz
           
           <div className={`space-y-3 text-sm ${isNeon ? 'text-[#c0c0ff]' : 'text-gray-700'}`}>
             <div className="flex gap-3">
-              <div className={`shrink-0 size-6 rounded-full flex items-center justify-center ${isNeon ? 'bg-gradient-to-r from-[#8b5cf6] to-[#00f0ff] text-black shadow-[0_0_10px_rgba(139,92,246,0.5)]' : 'bg-purple-600 text-white'}`}>
+              <div className={`shrink-0 size-6 rounded-full flex items-center justify-center ${isNeon ? 'bg-linear-to-r from-[#8b5cf6] to-[#00f0ff] text-black shadow-[0_0_10px_rgba(139,92,246,0.5)]' : 'bg-purple-600 text-white'}`}>
                 1
               </div>
               <p>Your query is converted to an embedding vector</p>
             </div>
             <div className="flex gap-3">
-              <div className={`shrink-0 size-6 rounded-full flex items-center justify-center ${isNeon ? 'bg-gradient-to-r from-[#8b5cf6] to-[#00f0ff] text-black shadow-[0_0_10px_rgba(139,92,246,0.5)]' : 'bg-purple-600 text-white'}`}>
+              <div className={`shrink-0 size-6 rounded-full flex items-center justify-center ${isNeon ? 'bg-linear-to-r from-[#8b5cf6] to-[#00f0ff] text-black shadow-[0_0_10px_rgba(139,92,246,0.5)]' : 'bg-purple-600 text-white'}`}>
                 2
               </div>
               <p>Most similar chunks are retrieved using cosine similarity</p>
             </div>
             <div className="flex gap-3">
-              <div className={`shrink-0 size-6 rounded-full flex items-center justify-center ${isNeon ? 'bg-gradient-to-r from-[#8b5cf6] to-[#00f0ff] text-black shadow-[0_0_10px_rgba(139,92,246,0.5)]' : 'bg-purple-600 text-white'}`}>
+              <div className={`shrink-0 size-6 rounded-full flex items-center justify-center ${isNeon ? 'bg-linear-to-r from-[#8b5cf6] to-[#00f0ff] text-black shadow-[0_0_10px_rgba(139,92,246,0.5)]' : 'bg-purple-600 text-white'}`}>
                 3
               </div>
               <p>Retrieved context is used to generate an informed response</p>
@@ -184,7 +184,7 @@ export function RetrievalVisualizer({ chunks, onBack, theme }: RetrievalVisualiz
           <div key={index} className="space-y-4">
             {/* Query */}
             <div className="flex justify-end">
-              <Card className={isNeon ? 'max-w-2xl p-4 bg-gradient-to-r from-[#00f0ff] to-[#00c0ff] text-black border-0 shadow-[0_0_20px_rgba(0,240,255,0.4)]' : 'max-w-2xl p-4 bg-indigo-600 text-white border-0'}>
+              <Card className={isNeon ? 'max-w-2xl p-4 bg-linear-to-r from-[#00f0ff] to-[#00c0ff] text-black border-0 shadow-[0_0_20px_rgba(0,240,255,0.4)]' : 'max-w-2xl p-4 bg-indigo-600 text-white border-0'}>
                 <p className="leading-relaxed">{message.query}</p>
               </Card>
             </div>
@@ -199,9 +199,9 @@ export function RetrievalVisualizer({ chunks, onBack, theme }: RetrievalVisualiz
 
               <div className="grid md:grid-cols-3 gap-3">
                 {message.retrievedChunks.map((item, idx) => (
-                  <Card key={item.chunk.id} className={`p-4 ${isNeon ? 'bg-gradient-to-br from-[#39ff14]/10 to-[#00ff00]/10 border border-[#39ff14]/30 hover:shadow-[0_0_15px_rgba(57,255,20,0.3)]' : 'bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200'} transition-all`}>
+                  <Card key={item.chunk.id} className={`p-4 ${isNeon ? 'bg-linear-to-br from-[#39ff14]/10 to-[#00ff00]/10 border border-[#39ff14]/30 hover:shadow-[0_0_15px_rgba(57,255,20,0.3)]' : 'bg-linear-to-br from-green-50 to-emerald-50 border border-green-200'} transition-all`}>
                     <div className="flex items-start justify-between mb-2">
-                      <Badge className={isNeon ? 'bg-gradient-to-r from-[#39ff14] to-[#00ff00] text-black shadow-[0_0_10px_rgba(57,255,20,0.5)]' : 'bg-green-600'}>
+                      <Badge className={isNeon ? 'bg-linear-to-r from-[#39ff14] to-[#00ff00] text-black shadow-[0_0_10px_rgba(57,255,20,0.5)]' : 'bg-green-600'}>
                         Rank {idx + 1}
                       </Badge>
                       <Badge variant="outline" className={isNeon ? 'text-[#39ff14] border-[#39ff14]/50' : 'text-green-700 border-green-300'}>
@@ -218,7 +218,7 @@ export function RetrievalVisualizer({ chunks, onBack, theme }: RetrievalVisualiz
 
             {/* Response */}
             <div className="flex justify-start">
-              <Card className={`max-w-2xl p-4 ${isNeon ? 'bg-gradient-to-br from-[#8b5cf6]/10 to-[#ff00ff]/10 border-2 border-[#8b5cf6]/30 shadow-[0_0_20px_rgba(139,92,246,0.2)]' : 'bg-gradient-to-br from-purple-50 to-indigo-50 border-2 border-purple-200'}`}>
+              <Card className={`max-w-2xl p-4 ${isNeon ? 'bg-linear-to-br from-[#8b5cf6]/10 to-[#ff00ff]/10 border-2 border-[#8b5cf6]/30 shadow-[0_0_20px_rgba(139,92,246,0.2)]' : 'bg-linear-to-br from-purple-50 to-indigo-50 border-2 border-purple-200'}`}>
                 <div className="flex items-center gap-2 mb-3">
                   <Sparkles className={`size-4 ${isNeon ? 'text-[#8b5cf6]' : 'text-purple-600'}`} />
                   <span className={`text-sm ${isNeon ? 'text-[#8b5cf6]' : 'text-purple-700'}`}>AI Response</span>

@@ -85,11 +85,11 @@ export function SimilarityVisualizer({ chunks, queryEmbedding, setQueryEmbedding
 
       <Tabs defaultValue="embeddings" className="w-full">
         <TabsList className={`grid w-full max-w-md mx-auto grid-cols-2 ${isNeon ? 'bg-[#1a1a2e] border border-[#8b5cf6]/30' : 'bg-white'}`}>
-          <TabsTrigger value="embeddings" className={isNeon ? 'data-[state=active]:bg-[#8b5cf6]/20 data-[state=active]:text-[#8b5cf6]' : ''}>
+          <TabsTrigger value="embeddings" className={isNeon ? 'data-[state=active]:bg-[#8b5cf6]/20 data-[state=active]:text-[#8b5cf6] text-gray-400' : ''}>
             <Activity className="size-4 mr-2" />
             Embedding Space
           </TabsTrigger>
-          <TabsTrigger value="similarity" className={isNeon ? 'data-[state=active]:bg-[#ff00ff]/20 data-[state=active]:text-[#ff00ff]' : ''}>
+          <TabsTrigger value="similarity" className={isNeon ? 'data-[state=active]:bg-[#ff00ff]/20 data-[state=active]:text-[#ff00ff] text-gray-400' : ''}>
             <Search className="size-4 mr-2" />
             Similarity Search
           </TabsTrigger>
@@ -144,7 +144,7 @@ export function SimilarityVisualizer({ chunks, queryEmbedding, setQueryEmbedding
               </div>
             </div>
 
-            <div className={`rounded-lg p-4 ${isNeon ? 'bg-gradient-to-br from-[#1a1a2e] to-[#0a0a0f] border border-[#8b5cf6]/20' : 'bg-gradient-to-br from-indigo-50 to-purple-50'}`}>
+            <div className={`rounded-lg p-4 ${isNeon ? 'bg-linear-to-br from-[#1a1a2e] to-[#0a0a0f] border border-[#8b5cf6]/20' : 'bg-linear-to-br from-indigo-50 to-purple-50'}`}>
               {viewMode === '2d' ? (
                 <ResponsiveContainer width="100%" height={400}>
                   <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
@@ -218,7 +218,7 @@ export function SimilarityVisualizer({ chunks, queryEmbedding, setQueryEmbedding
                   className={isNeon ? 'bg-[#1a1a2e] border-[#2a2a40] text-[#e0e0ff] placeholder:text-[#6060a0] focus:border-[#ff00ff]/50' : ''}
                 />
 
-                <Button onClick={handleQuerySubmit} className={`w-full ${isNeon ? 'bg-gradient-to-r from-[#ff00ff] to-[#ff0080] hover:from-[#ff0080] hover:to-[#ff00ff] text-black shadow-[0_0_20px_rgba(255,0,255,0.3)]' : 'bg-purple-600 hover:bg-purple-700'}`}>
+                <Button onClick={handleQuerySubmit} className={`w-full ${isNeon ? 'bg-linear-to-r from-[#ff00ff] to-[#ff0080] hover:from-[#ff0080] hover:to-[#ff00ff] text-black shadow-[0_0_20px_rgba(255,0,255,0.3)]' : 'bg-purple-600 hover:bg-purple-700'}`}>
                   <Search className="size-4 mr-2" />
                   Compute Similarity
                 </Button>
@@ -283,7 +283,7 @@ export function SimilarityVisualizer({ chunks, queryEmbedding, setQueryEmbedding
                 </div>
               ) : (
                 <div className="space-y-4">
-                  <div className={`rounded-lg p-4 ${isNeon ? 'bg-gradient-to-br from-[#1a1a2e] to-[#0a0a0f] border border-[#00f0ff]/20' : 'bg-gradient-to-br from-indigo-50 to-purple-50'}`}>
+                  <div className={`rounded-lg p-4 ${isNeon ? 'bg-linear-to-br from-[#1a1a2e] to-[#0a0a0f] border border-[#00f0ff]/20' : 'bg-linear-to-br from-indigo-50 to-purple-50'}`}>
                     <ResponsiveContainer width="100%" height={250}>
                       <BarChart data={similarityData}>
                         <CartesianGrid strokeDasharray="3 3" stroke={isNeon ? '#2a2a40' : '#e0e7ff'} />
@@ -303,10 +303,10 @@ export function SimilarityVisualizer({ chunks, queryEmbedding, setQueryEmbedding
                       <div key={sim.chunkId} className={`flex items-start gap-3 p-3 rounded-lg border transition-all ${isNeon ? 'bg-[#1a1a2e] border-[#00f0ff]/30 hover:shadow-[0_0_15px_rgba(0,240,255,0.2)]' : 'bg-white border-indigo-100'}`}>
                         <Badge className={index === 0 
                           ? isNeon 
-                            ? "bg-gradient-to-r from-[#39ff14] to-[#00ff00] text-black shadow-[0_0_10px_rgba(57,255,20,0.5)]" 
+                            ? "bg-linear-to-r from-[#39ff14] to-[#00ff00] text-black shadow-[0_0_10px_rgba(57,255,20,0.5)]" 
                             : "bg-green-600"
                           : isNeon 
-                            ? "bg-gradient-to-r from-[#00f0ff] to-[#00c0ff] text-black shadow-[0_0_10px_rgba(0,240,255,0.5)]"
+                            ? "bg-linear-to-r from-[#00f0ff] to-[#00c0ff] text-black shadow-[0_0_10px_rgba(0,240,255,0.5)]"
                             : "bg-indigo-600"
                         }>
                           {(sim.similarity * 100).toFixed(1)}%
@@ -330,7 +330,7 @@ export function SimilarityVisualizer({ chunks, queryEmbedding, setQueryEmbedding
           <ArrowLeft className="size-4 mr-2" />
           Back to Chunking
         </Button>
-        <Button onClick={onNext} size="lg" className={isNeon ? 'bg-gradient-to-r from-[#8b5cf6] to-[#ff00ff] hover:from-[#7c4ce6] hover:to-[#ff0080] text-black shadow-[0_0_30px_rgba(139,92,246,0.4)]' : 'bg-indigo-600 hover:bg-indigo-700'}>
+        <Button onClick={onNext} size="lg" className={isNeon ? 'bg-linear-to-r from-[#8b5cf6] to-[#ff00ff] hover:from-[#7c4ce6] hover:to-[#ff0080] text-black shadow-[0_0_30px_rgba(139,92,246,0.4)]' : 'bg-indigo-600 hover:bg-indigo-700'}>
           Continue to Retrieval
           <ArrowRight className="size-4 ml-2" />
         </Button>

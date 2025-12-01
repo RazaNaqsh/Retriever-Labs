@@ -570,7 +570,7 @@ export function ChunkVisualizer({ chunks, setChunks, onNext, theme }: ChunkVisua
                   onClick={handleTextSubmit} 
                   className={`flex-1 ${
                     isNeon 
-                      ? 'bg-gradient-to-r from-[#00f0ff] to-[#00c0ff] hover:from-[#00c0ff] hover:to-[#00f0ff] text-black shadow-[0_0_20px_rgba(0,240,255,0.3)]' 
+                      ? 'bg-linear-to-r from-[#00f0ff] to-[#00c0ff] hover:from-[#00c0ff] hover:to-[#00f0ff] text-black shadow-[0_0_20px_rgba(0,240,255,0.3)]' 
                       : 'bg-indigo-600 hover:bg-indigo-700 text-white'
                   }`}
                   disabled={isProcessing}
@@ -624,15 +624,15 @@ export function ChunkVisualizer({ chunks, setChunks, onNext, theme }: ChunkVisua
                     key={chunk.id} 
                     className={`p-4 ${
                       isNeon 
-                        ? 'bg-gradient-to-br from-[#8b5cf6]/10 to-[#00f0ff]/10 border border-[#8b5cf6]/30 hover:shadow-[0_0_15px_rgba(139,92,246,0.3)]' 
-                        : 'bg-gradient-to-br from-purple-50 to-indigo-50 border border-purple-200 hover:shadow-md'
+                        ? 'bg-linear-to-br from-[#8b5cf6]/10 to-[#00f0ff]/10 border border-[#8b5cf6]/30 hover:shadow-[0_0_15px_rgba(139,92,246,0.3)]' 
+                        : 'bg-linear-to-br from-purple-50 to-indigo-50 border border-purple-200 hover:shadow-md'
                     } transition-all`}
                   >
                     <div className="flex items-start gap-3">
                       <Badge 
                         className={isNeon 
-                          ? 'bg-gradient-to-r from-[#8b5cf6] to-[#00f0ff] shrink-0 shadow-[0_0_10px_rgba(139,92,246,0.5)]' 
-                          : 'bg-gradient-to-r from-purple-600 to-indigo-600 shrink-0'
+                          ? 'bg-linear-to-r from-[#8b5cf6] to-[#00f0ff] shrink-0 shadow-[0_0_10px_rgba(139,92,246,0.5)]' 
+                          : 'bg-linear-to-r from-purple-600 to-indigo-600 shrink-0'
                         }
                       >
                         {index + 1}
@@ -681,8 +681,8 @@ export function ChunkVisualizer({ chunks, setChunks, onNext, theme }: ChunkVisua
               onClick={onNext} 
               size="lg" 
               className={isNeon 
-                ? 'bg-gradient-to-r from-[#00f0ff] to-[#8b5cf6] hover:from-[#00c0ff] hover:to-[#7c4ce6] text-black shadow-[0_0_30px_rgba(0,240,255,0.4)]' 
-                : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white'
+                ? 'bg-linear-to-r from-[#00f0ff] to-[#8b5cf6] hover:from-[#00c0ff] hover:to-[#7c4ce6] text-black shadow-[0_0_30px_rgba(0,240,255,0.4)]' 
+                : 'bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white'
               }
             >
               Continue to Similarity Analysis
